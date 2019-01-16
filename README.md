@@ -8,3 +8,4 @@ Check if working on jupyter
 
 manual to install dependencies
 
+Compatibility with jupyter on sypder on anaconda
