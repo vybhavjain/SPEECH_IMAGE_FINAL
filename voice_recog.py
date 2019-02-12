@@ -2,8 +2,10 @@ import turtle
 import speech_recognition as sr
 import re
 from flowchart_addsubmuldiv import flowchart
-#import comparator
+import comparator
 import color_shape
+import loopback
+import win32com.client as wincl
 
 import urllib.request
 from bs4 import BeautifulSoup
@@ -15,7 +17,6 @@ def getColors():
     children = [item.findChildren() for item in soup.find_all('tr')]
     colors = [''.join( ' '+x if 'A' <= x <= 'Z' else x for x in item[0].text.replace(u'\xa0', '')).strip().lower() for item in children]
     return colors[1:]
-
 
 def findmatches(pattern, phrase):
 
@@ -52,6 +53,64 @@ wordList = re.sub("[^\w]", " ",  n).split()
 for i in wordList:
     if i in list1:
         list2.append(i)
+        
+if len(list2) < 1 :
+    list2.append('black')
+    list2.append('red')
+    
+if len(list2) < 2 :
+    list2.append('red')
+
+possible = ['circle','sqaure','design','flowchart','rectangle','look','star']
+
+flag = 0
+
+for i in wordList:
+    if i in possible:
+        flag= 1
+        
+for i in range(1):
+    while flag == 0 :
+        speak = wincl.Dispatch("SAPI.SpVoice")
+        speak.Speak("Please try again")
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            print('Say Something')
+            audio=r.listen(source)
+    
+        try:
+            print('Google thinks you said:\n' + r.recognize_google(audio))    
+        except:
+            pass
+
+        n=r.recognize_google(audio)
+        patterns= [r'\d+']
+        radd=findmatches(patterns, n)
+
+        if len(radd)==0:
+            int22=int('1')
+        else:
+            str1 = ''.join(radd)
+            int22 = int(str1)
+    
+        wordList = re.sub("[^\w]", " ",  n).split()
+
+        for i in wordList:
+            if i in list1:
+                list2.append(i)
+        
+        if len(list2) < 1 :
+            list2.append('black')
+            list2.append('red')
+    
+        if len(list2) < 2 :
+            list2.append('red')
+        
+        for i in wordList:
+            if i in possible:
+                flag= 1
+        
+
 
 if 'circle' in wordList:
     color_shape.circle(20*int22,list2[0],list2[1])
@@ -72,12 +131,10 @@ elif 'flowchart' in wordList:
     elif 'division' in wordList:
         flowchart('division')
     else:
-        import comparator
         comparator.flowchart1()
         print("OK")
         
 elif 'look' in wordList:
-    import loopback
     loopback.flowchart1()        
         
 elif 'star' in wordList:
@@ -91,12 +148,3 @@ else:
    
 turtle.hideturtle()
 turtle.done()
-     
-
-        
-        
-        
-        
-
-
-
